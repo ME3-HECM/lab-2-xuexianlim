@@ -18,7 +18,7 @@ void main(void)
 		if (!PORTFbits.RF2 && release) {
             count++;  //increment count every time button pressed and was released from previous press
             release = 0;
-        } else if (PORTFbits.RF2 && !release) {
+        } else if (PORTFbits.RF2) {
             release = 1;
         }
         
