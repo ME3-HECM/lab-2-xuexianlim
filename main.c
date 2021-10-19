@@ -9,13 +9,16 @@
 
 void main(void) 
 {
-	unsigned int count=0;
+	unsigned int count=1;
     LEDarray_init();
+    short int forward = 0; //1 = scan forwards, 0 = scan backwards
   
     while (1) {
-		count++; // increment count
-		if (count>511) {count=0;} //reset a when it gets too big
-		LEDarray_disp_bin(count); //output a on the LED array in binary
+		LEDarray_disp_bin(count); //output a number on the LED array in binary
 		__delay_ms(50); // Delay so human eye can see change
+        if (count == 1 || count == 256) { //LEDs can only display 2^0 to 2^8
+            forward = !forward; //flip scan direction
+        }
+        if (forward) {count = count * 2;} else {count = count / 2;} //powers of 2 so only a single bit is 1 in binary
     }
 }
