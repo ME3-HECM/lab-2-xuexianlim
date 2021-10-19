@@ -7,6 +7,7 @@
 
 //function prototypes
 void LEDarray_init(void);
+void button_init(void);
 void LEDarray_disp_bin(unsigned int number);
 void LEDarray_disp_dec(unsigned int number);
 void LEDarray_disp_PPM(unsigned int number, unsigned int max);

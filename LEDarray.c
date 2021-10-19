@@ -14,8 +14,15 @@ void LEDarray_init(void)
 	
     TRISA = 0; //set up TRIS registers for pins connected to LED array
 	TRISB = 0;
-    TRISF = 0;
+    TRISFbits.TRISF0 = 0;
+    TRISFbits.TRISF6 = 0;
     TRISG = 0;
+}
+
+void button_init(void)
+{
+    TRISFbits.TRISF2 = 1; //set TRIS value for RF2 input (button)
+    ANSELFbits.ANSELF2 = 0; //disable analogue input
 }
 
 /************************************

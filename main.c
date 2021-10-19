@@ -9,16 +9,20 @@
 
 void main(void) 
 {
-	unsigned int count=1;
+	unsigned int count=0;
     LEDarray_init();
-    short int forward = 0; //1 = scan forwards, 0 = scan backwards
-  
+    button_init();
+    short int release=1;
+    
     while (1) {
-		LEDarray_disp_bin(count); //output a number on the LED array in binary
-		__delay_ms(50); // Delay so human eye can see change
-        if (count == 1 || count == 256) { //LEDs can only display 2^0 to 2^8
-            forward = !forward; //flip scan direction
+		if (!PORTFbits.RF2 && release) {
+            count++;  //increment count every time button pressed and was released from previous press
+            release = 0;
+        } else if (PORTFbits.RF2 && !release) {
+            release = 1;
         }
-        if (forward) {count = count * 2;} else {count = count / 2;} //powers of 2 so only a single bit is 1 in binary
+        
+        if (count > 511) {count = 0;} //reset if number gets too big
+        LEDarray_disp_bin(count); //output a number on the LED array in binary
     }
 }
