@@ -51,10 +51,18 @@ void LEDarray_disp_bin(unsigned int number)
 void LEDarray_disp_dec(unsigned int number)
 {
 	unsigned int disp_val;
-	
+	unsigned sum = 0;
+    
 	//some code to manipulate the variable number into the correct
 	//format and store in disp_val for display on the LED array
-
+    disp_val = number / 10; //quotient when number is divided by 10
+    if (disp_val != 0) { //ensure disp_val remains as 0 as long as number is < 10
+        for (int i = 0; i < disp_val; i++) {
+            sum = sum + (1 << (i)); //sum of consecutive powers of 2 so consecutive LEDs light up in succession
+        }
+    }
+    disp_val = sum;
+    
 	LEDarray_disp_bin(disp_val); 	//display value on LED array
 }
 
