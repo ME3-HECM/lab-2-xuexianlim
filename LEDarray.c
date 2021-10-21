@@ -51,10 +51,12 @@ void LEDarray_disp_bin(unsigned int number)
 void LEDarray_disp_dec(unsigned int number)
 {
 	unsigned int disp_val;
-	
+    
 	//some code to manipulate the variable number into the correct
 	//format and store in disp_val for display on the LED array
-
+    if (number / 10 > 9) {disp_val = 0b111111111;} //saturation
+    else {disp_val = 0b111111111 >> (9 - number / 10);} //turn off LEDs from the most significant bit based on the magnitude of number
+    
 	LEDarray_disp_bin(disp_val); 	//display value on LED array
 }
 
@@ -70,7 +72,13 @@ void LEDarray_disp_PPM(unsigned int cur_val, unsigned int max)
 	unsigned int disp_val;
 	
 	// some code to format the variable cur_val and max, store in disp_val for display on the LED array
-	// hint: one method is to manipulate the variables separately and then combine them using the bitwise OR operator
+    if (cur_val / 10 > 9) {cur_val = 0b111111111;} //saturation
+    else {cur_val = 0b111111111 >> (9 - cur_val / 10);} //turn off LEDs from the most significant bit based on the magnitude of cur_val
+    
+    if (max / 10 > 9) {max = 0b100000000;} //saturation
+    else {max = 0b100000000 >> (9 - max / 10);} //right shift based on magnitude of max
 
+    disp_val = cur_val | max;
+    
 	LEDarray_disp_bin(disp_val);	//display value on LED array
 }

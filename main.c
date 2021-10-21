@@ -4,34 +4,28 @@
 
 #include <xc.h>
 #include "LEDarray.h"
+#include "ADC.h"
 
 #define _XTAL_FREQ 64000000 //note intrinsic _delay function is 62.5ns at 64,000,000Hz  
 
 void main(void) 
 {
-	unsigned int count=0;
     LEDarray_init();
-    button_init();
-    short int release=1; //variable to check if button has been released
+    ADC_init();
+    unsigned int max = 0;
+    char numdelays = 0; //variable to keep track of number of delays
     
     while (1) {
-		if (!PORTFbits.RF2 && release) {
-            count++;  //increment count every time button pressed and was released from previous press
-            release = 0;
-            if (count > 511) {count = 0;} //reset if number gets too big
-            LEDarray_disp_bin(count); //output a number on the LED array in binary
-            
-            __delay_ms(500);
-            
-            while (!PORTFbits.RF2 && !release) {
-                count++;
-                __delay_ms(50); //delay so human eye can see
-                if (count > 511) {count = 0;} //reset if number gets too big
-                LEDarray_disp_bin(count); //output a number on the LED array in binary  
-            }
-            if (PORTFbits.RF2) {
-                release = 1;
-            }
-        }    
+        if (ADC_getval() > max) {max = ADC_getval();} //get the max value
+        if (max > 90) {max = 90;} //saturation
+        
+        LEDarray_disp_PPM(ADC_getval(),max); //display the current and max value
+        
+        __delay_ms(100); //10 * 100 ms delays add up to 1 s. 100 ms chosen so the human eye does not really notice the interruption
+        numdelays++;
+        if (numdelays == 10) {
+            max = max - 10; //each drop of 10 turns off 1 LED
+            numdelays = 0; //reset delay counter
+        }
     }
 }
